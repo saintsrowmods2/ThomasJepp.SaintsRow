@@ -121,9 +121,19 @@ namespace ThomasJepp.SaintsRow
                             if (!libraryFolders.ContainsKey(folderId.ToString()))
                                 break;
 
-                            string extraLibrary = (string)libraryFolders[folderId.ToString()];
-
+                            var libraryFolder = libraryFolders[folderId.ToString()];
+                            string extraLibrary = null;
+                            if (libraryFolder is string)
+                            {
+                                extraLibrary = (string)libraryFolder;
+                            }
+                            else if (libraryFolder is Dictionary<string, object>)
+                            {
+                                var folderDef = (Dictionary<string, object>)libraryFolder;
+                                extraLibrary = (string)folderDef["path"];
+                            }
                             appManifestFile = Path.Combine(extraLibrary, "steamapps", String.Format("appmanifest_{0}.acf", id));
+
                             if (File.Exists(appManifestFile))
                             {
                                 KeyValues manifestKv;
